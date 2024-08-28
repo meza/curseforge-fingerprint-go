@@ -1,0 +1,33 @@
+name: Verify and Release
+
+permissions:
+  issues: write
+  checks: write
+  contents: write
+  pull-requests: write
+
+on:
+  - push
+  - pull_request
+
+env:
+  LEFTHOOK: 0
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: meza/action-go-setup@main
+        id: go
+        name: Set up Go
+        with:
+          go-version: latest
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - name: Release
+        if: go.new-release-published == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          npx semantic-release && \
+          GOPROXY=proxy.golang.org go list -m github.com/meza/curseforge-fingerprint-go@${{ steps.go.outputs.new-release-version }}

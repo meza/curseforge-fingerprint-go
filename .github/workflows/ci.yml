@@ -25,7 +25,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Release
-        if: go.new-release-published == 'true'
+        if: steps.go.new-release-published == 'true'
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |

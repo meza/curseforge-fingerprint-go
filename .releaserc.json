@@ -21,6 +21,7 @@
       }
     ],
     "semantic-release-export-data",
+    "@semantic-release/github",
     [
       "@semantic-release/changelog",
       {

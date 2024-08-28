@@ -30,4 +30,4 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           npx semantic-release && \
-          GOPROXY=proxy.golang.org go list -m github.com/meza/curseforge-fingerprint-go@${{ steps.go.outputs.new-release-version }}
+          GOPROXY=proxy.golang.org go list -m github.com/meza/curseforge-fingerprint-go@v${{ steps.go.outputs.new-release-version }}

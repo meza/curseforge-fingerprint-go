@@ -15,7 +15,7 @@ env:
 
 jobs:
   release:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - uses: meza/action-go-ci@d69ce50e27eb0bc391fcb33b5beeef51c611d8c0 # main
         id: go

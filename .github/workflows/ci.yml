@@ -15,7 +15,7 @@ env:
 
 jobs:
   release:
-    runs-on: self-hosted
+    runs-on: meza-ubuntu-slim
     steps:
       - uses: meza/action-go-ci@d69ce50e27eb0bc391fcb33b5beeef51c611d8c0 # main
         id: go

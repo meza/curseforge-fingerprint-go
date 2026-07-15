@@ -17,15 +17,45 @@ jobs:
   release:
     runs-on: self-hosted
     steps:
-      - uses: meza/action-go-ci@d69ce50e27eb0bc391fcb33b5beeef51c611d8c0 # main
-        id: go
-        name: Set up Go
+      - name: ⬇️ Checkout
+        uses: actions/checkout@v6.0.3
+
+      - name: 🔧 Set up Node.js
+        uses: actions/setup-node@v6.4.0
+        with:
+          node-version: 'latest'
+
+      - name: 🔧 Set up Go 1.22.6
+        uses: actions/setup-go@v6.5.0
         with:
           go-version: '1.22.6'
+
+      - name: 📦 Install dependencies
+        shell: bash
+        run: |
+          go get .
+          npm install semantic-release semantic-release-export-data @semantic-release/changelog @semantic-release/git @semantic-release/github @semantic-release/exec @semantic-release/commit-analyzer @semantic-release/release-notes-generator conventional-changelog-conventionalcommits
+
+      - name: 🔍 Test with the Go CLI
+        shell: bash
+        run: |
+          go install github.com/ctrf-io/go-ctrf-json-reporter/cmd/go-ctrf-json-reporter@latest
+          go test -json ./... | go-ctrf-json-reporter -output ctrf-report.json
+
+      - name: 📝 Publish CTRF Test Summary Results
+        if: always()
+        shell: bash
+        run: npx github-actions-ctrf ctrf-report.json
+
+      - name: 🧮 Get next version number
+        id: get-next-version
+        shell: bash
+        run: npx semantic-release --dry-run
+        env:
           GH_TOKEN: ${{ github.token }}
 
       - name: Release
-        if: ${{ steps.go.outputs.new-release-published == 'true'  }}
+        if: ${{ steps.get-next-version.outputs.new-release-published == 'true' }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
